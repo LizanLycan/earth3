@@ -16,6 +16,10 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@web3auth/base": "^2.1.2",
+    "@web3auth/openlogin-adapter": "^2.1.2",
+    "@web3auth/web3auth": "^2.1.2",
+    "ethers": "^5.7.1",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
