@@ -6,10 +6,7 @@ import React, {
   useEffect,
   useState
 } from 'react'
-import {
-  StreamrClient,
-  STREAMR_STORAGE_NODE_GERMANY
-} from 'streamr-client'
+import { StreamrClient } from 'streamr-client'
 import { useWeb3 } from '../Web3Context'
 
 interface IStreamingMessages {
@@ -50,6 +47,8 @@ const StreamingMessagesContextProvider = ({
       }
     })
 
+    // const _streamr = new StreamrClient()
+
     setStreamr(_streamr)
   }, [(window as any).ethereum])
 
@@ -73,10 +72,10 @@ const StreamingMessagesContextProvider = ({
   }
 
   async function getOrCreateStream(peerAddress: string) {
-    const stream = await streamr?.getOrCreateStream({
-      id: `${peerAddress}/${STREAM_BASE_ID}`
-    })
-    await stream?.addToStorageNode(STREAMR_STORAGE_NODE_GERMANY)
+    const stream = await streamr?.getStream(
+      '0x41e36d4ffb5b443b20f55bcff27c68ff086fe06f/my-test-stream'
+    )
+    // await stream?.addToStorageNode(STREAMR_STORAGE_NODE_GERMANY)
 
     return stream
   }
@@ -87,9 +86,9 @@ const StreamingMessagesContextProvider = ({
   ) {
     const sub1 = await streamr?.subscribe(
       {
-        id: `${peerAddress}/${STREAM_BASE_ID}`,
+        id: '0x41e36d4ffb5b443b20f55bcff27c68ff086fe06f/my-test-stream',
         resend: {
-          last: 50
+          last: 10
         }
       },
       callback
@@ -97,7 +96,10 @@ const StreamingMessagesContextProvider = ({
   }
 
   async function publishMessage(stream: any, message: any) {
-    await stream.publish(message)
+    await streamr?.publish(
+      '0x41e36d4ffb5b443b20f55bcff27c68ff086fe06f/my-test-stream',
+      message
+    )
   }
 
   const contextObj = {

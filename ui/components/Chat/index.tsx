@@ -119,9 +119,7 @@ const Chat = ({ open }: IChatProps) => {
   ]
 
   const sendMessage = async () => {
-    if (stream) {
-      publishMessage?.(stream, 'Holis wuenas, qlq')
-    }
+    publishMessage?.(stream, 'Holis wuenas, qlq')
   }
 
   const onMessage = async (content: any, metadata: any) => {
@@ -129,11 +127,11 @@ const Chat = ({ open }: IChatProps) => {
   }
 
   const createMessages = async () => {
-    const stream = await getOrCreateStream?.(
-      '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345'
-    )
+    // const stream = await getOrCreateStream?.(
+    //   '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345'
+    // )
 
-    setStream(stream)
+    // setStream(stream)
 
     await subscribeMessages?.(
       '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345',
