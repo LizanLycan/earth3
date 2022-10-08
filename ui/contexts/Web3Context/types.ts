@@ -1,3 +1,6 @@
+import { SafeEventEmitterProvider } from '@web3auth/base'
+import { ethers } from 'ethers'
+
 export enum StatusConnection {
   Connected = 'connected',
   Disconnected = 'disconnected',
@@ -13,6 +16,8 @@ export interface IWeb3Context {
   chainId: number
   statusConnection: StatusConnection
   addressConnected: string
+  signer: ethers.providers.JsonRpcSigner | ethers.Signer | undefined
+  provider: SafeEventEmitterProvider | null
 
   getUserInfo: () => Promise<any>
   login: () => Promise<string>

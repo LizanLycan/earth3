@@ -25,7 +25,7 @@ const walletConnectV1Adapter = new WalletConnectV1Adapter({
   adapterSettings: {
     bridge: 'https://bridge.walletconnect.org'
   },
-  clientId: 'YOUR_WEB3AUTH_CLIENT_ID'
+  clientId: WEB_3_AUTH_ID
 })
 
 const metamaskAdapter = new MetamaskAdapter({

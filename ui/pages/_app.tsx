@@ -6,7 +6,11 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import theme from '../src/theme'
 import createEmotionCache from '../src/createEmotionCache'
-import Web3ContextProvider from '../contexts/Web3Context'
+import dynamic from 'next/dynamic'
+
+const AppWithoutSSR = dynamic(() => import('../utils/AppWrapper'), {
+  ssr: false
+})
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -32,9 +36,9 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Web3ContextProvider>
+        <AppWithoutSSR>
           <Component {...pageProps} />
-        </Web3ContextProvider>
+        </AppWithoutSSR>
       </ThemeProvider>
     </CacheProvider>
   )
