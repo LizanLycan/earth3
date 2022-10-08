@@ -14,6 +14,7 @@ export interface IWeb3Context {
   statusConnection: StatusConnection
   addressConnected: string
 
+  getUserInfo: () => Promise<any>
   login: () => Promise<string>
   logout: () => void
 }

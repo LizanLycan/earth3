@@ -10,16 +10,27 @@ import { Web3Auth } from '@web3auth/web3auth'
 import {
   WALLET_ADAPTERS,
   CHAIN_NAMESPACES,
-  SafeEventEmitterProvider
+  SafeEventEmitterProvider,
+  ADAPTER_EVENTS,
+  CONNECTED_EVENT_DATA
 } from '@web3auth/base'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
-import {
-  ERROR_CODES,
-  IWeb3Context,
-  StatusConnection
-} from './types.d'
+import { ERROR_CODES, IWeb3Context, StatusConnection } from './types'
 import { WEB_3_AUTH_ID } from '../../utils/constants'
 import RPC from './ethersRPC'
+import { MetamaskAdapter } from '@web3auth/metamask-adapter'
+import { WalletConnectV1Adapter } from '@web3auth/wallet-connect-v1-adapter'
+
+const walletConnectV1Adapter = new WalletConnectV1Adapter({
+  adapterSettings: {
+    bridge: 'https://bridge.walletconnect.org'
+  },
+  clientId: 'YOUR_WEB3AUTH_CLIENT_ID'
+})
+
+const metamaskAdapter = new MetamaskAdapter({
+  clientId: WEB_3_AUTH_ID
+})
 
 export const Web3Context = createContext<Partial<IWeb3Context>>({})
 
@@ -54,7 +65,7 @@ const Web3ContextProvider = ({
           clientId: WEB_3_AUTH_ID,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: '0x4',
+            chainId: '0x1',
             rpcTarget: 'https://rpc.ankr.com/eth' // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           uiConfig: {
@@ -88,17 +99,12 @@ const Web3ContextProvider = ({
                 clientId:
                   '371690983674-sulca0aieepqu5loobdk37sodaru6ec1.apps.googleusercontent.com'
               }
-              // Facebook login
-              // facebook: {
-              //   name: 'Custom Auth Login',
-              //   verifier: 'YOUR_FACEBOOK_VERIFIER_NAME', // Please create a verifier on the developer dashboard and pass the name here
-              //   typeOfLogin: 'facebook', // Pass on the login provider of the verifier you've created
-              //   clientId: 'FACEBOOK_CLIENT_ID_1234567890' // Pass on the clientId of the login provider here - Please note this differs from the Web3Auth ClientID. This is the JWT Client ID
-              // }
-              // Add other login providers here
             }
           }
         })
+
+        web3auth.configureAdapter(walletConnectV1Adapter)
+        web3auth.configureAdapter(metamaskAdapter)
         web3auth.configureAdapter(openloginAdapter)
         setWeb3auth(web3auth)
 
@@ -110,6 +116,10 @@ const Web3ContextProvider = ({
                 reddit: {
                   showOnModal: false,
                   name: 'reddit'
+                },
+                facebook: {
+                  showOnModal: false,
+                  name: 'facebook'
                 }
               }
             }
@@ -118,15 +128,22 @@ const Web3ContextProvider = ({
         if (web3auth.provider) {
           setProvider(web3auth.provider)
         }
+
+        subscribeAuthEvents(web3auth)
       } catch (error) {
         console.error(error)
       }
     })()
   }, [])
 
+  useEffect(() => {
+    login()
+  }, [web3auth])
+
   const login = async (): Promise<string> => {
     if (!web3auth) {
       console.log('web3auth not initialized yet')
+      setAddressConnected(StatusConnection.Disconnected)
       return StatusConnection.Disconnected
     }
 
@@ -150,10 +167,10 @@ const Web3ContextProvider = ({
         setSigner(signer)
         setChainId(chainId)
 
-        subscribeEvents(rawProvider)
         return StatusConnection.Connected
       }
 
+      setAddressConnected(StatusConnection.Disconnected)
       return StatusConnection.Disconnected
     } catch (err: any) {
       if (
@@ -182,25 +199,43 @@ const Web3ContextProvider = ({
     setProvider(null)
   }
 
-  const subscribeEvents = (_provider: any) => {
-    if (!_provider.on) return
-
-    _provider.on('disconnect', async () => {
-      await logout()
-    })
-
-    _provider.on('accountsChanged', async (accounts: string[]) => {
-      if (accounts.length > 0) {
-        setAddressConnected(accounts[0])
-      } else {
-        await logout()
+  // subscribe to lifecycle events emitted by web3auth
+  const subscribeAuthEvents = (web3auth: Web3Auth) => {
+    web3auth.on(
+      ADAPTER_EVENTS.CONNECTED,
+      (data: CONNECTED_EVENT_DATA) => {
+        console.log('CONNNNECTTTTTEEEEED to wallet', data)
+        // here is displayed provider ej: metamask
+        // web3auth.provider will be available here after user is connected
+        setAddressConnected(StatusConnection.Connected)
       }
+    )
+    web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
+      console.log('connecting')
+    })
+    web3auth.on(ADAPTER_EVENTS.DISCONNECTED, () => {
+      console.log('disconnected')
+      setAddressConnected(StatusConnection.Disconnected)
+    })
+    web3auth.on(ADAPTER_EVENTS.ERRORED, (error) => {
+      console.log('error', error)
+      setAddressConnected(StatusConnection.Error)
     })
 
-    _provider.on('chainChanged', async (networkId: string) => {
-      //networkId comes in Hex
-      setChainId(parseInt(networkId, 16))
+    web3auth.on(ADAPTER_EVENTS.READY, () => {
+      console.log('READYYYYYYY')
     })
+  }
+
+  const getUserInfo = async () => {
+    if (
+      !web3auth ||
+      statusConnection !== StatusConnection.Connected
+    ) {
+      return
+    }
+
+    return web3auth.getUserInfo()
   }
 
   const contextObj = {
@@ -208,7 +243,8 @@ const Web3ContextProvider = ({
     statusConnection,
     addressConnected,
     login,
-    logout
+    logout,
+    getUserInfo
   }
 
   return (

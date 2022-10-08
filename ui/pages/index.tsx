@@ -8,9 +8,17 @@ import ProTip from '../src/ProTip'
 import Copyright from '../src/Copyright'
 import { Button } from '@mui/material'
 import { useWeb3 } from '../contexts/Web3Context'
+import { StatusConnection } from '../contexts/Web3Context/types'
 
 const Home: NextPage = () => {
-  const { login } = useWeb3()
+  const { login, logout, statusConnection, getUserInfo } = useWeb3()
+
+  const getInfo = async () => {
+    const res = await getUserInfo?.()
+
+    console.log('USER INFOR RESPONSE: ', res)
+  }
+
   return (
     <Container maxWidth="lg">
       <Box
@@ -29,8 +37,19 @@ const Home: NextPage = () => {
           Go to the about page
         </Link>
 
-        <Button variant="contained" onClick={login}>
-          Connect
+        <Button variant="contained" onClick={getInfo}>
+          Get user info
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={
+            statusConnection === StatusConnection.Connected
+              ? logout
+              : login
+          }
+        >
+          Connect {statusConnection}
         </Button>
         <ProTip />
         <Copyright />
