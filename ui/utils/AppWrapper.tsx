@@ -1,3 +1,4 @@
+import StreamingMessagesContextProvider from '../contexts/StreamingMessages'
 import Web3ContextProvider from '../contexts/Web3Context'
 import Web3StorageContextProvider from '../contexts/Web3Storage'
 
@@ -9,7 +10,9 @@ function App({ children }: AppProps) {
   return (
     <Web3ContextProvider>
       <Web3StorageContextProvider>
-        {children}
+        <StreamingMessagesContextProvider>
+          {children}
+        </StreamingMessagesContextProvider>
       </Web3StorageContextProvider>
     </Web3ContextProvider>
   )

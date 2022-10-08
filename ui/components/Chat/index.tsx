@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Drawer,
   Fab,
@@ -21,7 +22,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import ReactPortal from '../Portals'
 import { useState } from 'react'
-// import { useXMTP } from '../../contexts/XMTPContext'
+import { useStreamingMessages } from '../../contexts/StreamingMessages'
 
 const styles = {
   table: {
@@ -65,7 +66,9 @@ interface IChatProps {
 
 const Chat = ({ open }: IChatProps) => {
   const [seeConversations, setSeeConversations] = useState(false)
-  // const { conversations } = useXMTP()
+  const [stream, setStream] = useState<any>()
+  const { getOrCreateStream, subscribeMessages, publishMessage } =
+    useStreamingMessages()
 
   const messages = [
     {
@@ -115,10 +118,34 @@ const Chat = ({ open }: IChatProps) => {
     }
   ]
 
+  const sendMessage = async () => {
+    if (stream) {
+      publishMessage?.(stream, 'Holis wuenas, qlq')
+    }
+  }
+
+  const onMessage = async (content: any, metadata: any) => {
+    console.log('IS Comming: ', content, metadata)
+  }
+
+  const createMessages = async () => {
+    const stream = await getOrCreateStream?.(
+      '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345'
+    )
+
+    setStream(stream)
+
+    await subscribeMessages?.(
+      '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345',
+      onMessage
+    )
+  }
+
   return (
     <ReactPortal>
       <Fade timeout={600} in={open}>
         <Grid container component={Paper} sx={styles.chatWrapper}>
+          <Button onClick={createMessages}>Create messages</Button>
           <IconButton
             sx={{ position: 'absolute', zIndex: 1 }}
             onClick={() => setSeeConversations(true)}
@@ -288,7 +315,11 @@ const Chat = ({ open }: IChatProps) => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton color="primary" aria-label="add">
+                        <IconButton
+                          color="primary"
+                          aria-label="add"
+                          onClick={sendMessage}
+                        >
                           <SendIcon />
                         </IconButton>
                       </InputAdornment>
