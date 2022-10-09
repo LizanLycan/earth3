@@ -1,2 +1,2 @@
 # earth3
-An all in one platform focused in web2 users that want to know about web3 universe
+earth3 is an all-in-one web platform where new web3 users can access the essential services of web3
