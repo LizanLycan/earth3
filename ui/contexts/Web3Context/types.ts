@@ -18,6 +18,7 @@ export interface IWeb3Context {
   addressConnected: string
   signer: ethers.providers.JsonRpcSigner | ethers.Signer | undefined
   provider: SafeEventEmitterProvider | null
+  userInfo: any
 
   getUserInfo: () => Promise<any>
   login: () => Promise<string>

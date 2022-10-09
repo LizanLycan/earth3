@@ -57,6 +57,7 @@ const Web3ContextProvider = ({
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null)
   const [provider, setProvider] =
     useState<SafeEventEmitterProvider | null>(null)
+  const [userInfo, setUserInfo] = useState<any>()
 
   useEffect(() => {
     ;(async () => {
@@ -128,8 +129,6 @@ const Web3ContextProvider = ({
         if (web3auth.provider) {
           setProvider(web3auth.provider)
         }
-
-        subscribeAuthEvents(web3auth)
       } catch (error) {
         console.error(error)
       }
@@ -137,7 +136,10 @@ const Web3ContextProvider = ({
   }, [])
 
   useEffect(() => {
-    login()
+    if (web3auth) {
+      subscribeAuthEvents(web3auth)
+      login()
+    }
   }, [web3auth])
 
   const login = async (): Promise<string> => {
@@ -197,16 +199,20 @@ const Web3ContextProvider = ({
     setSigner(undefined)
     setChainId(0)
     setProvider(null)
+    setUserInfo(null)
   }
 
   // subscribe to lifecycle events emitted by web3auth
   const subscribeAuthEvents = (web3auth: Web3Auth) => {
     web3auth.on(
       ADAPTER_EVENTS.CONNECTED,
-      (data: CONNECTED_EVENT_DATA) => {
-        console.log('CONNNNECTTTTTEEEEED to wallet', data)
+      async (data: CONNECTED_EVENT_DATA) => {
+        // console.log('CONNNNECTTTTTEEEEED to wallet', data)
         // here is displayed provider ej: metamask
         // web3auth.provider will be available here after user is connected
+
+        const userInfo = await web3auth.getUserInfo()
+        setUserInfo(userInfo)
         setAddressConnected(StatusConnection.Connected)
       }
     )
@@ -242,6 +248,7 @@ const Web3ContextProvider = ({
     chainId,
     statusConnection,
     addressConnected,
+    userInfo,
     login,
     logout,
     getUserInfo

@@ -57,7 +57,7 @@ const TextEditor = () => {
   const { storeFile, retrieveFiles } = useWeb3Storage()
 
   const onSave = async (value: any) => {
-    await storeFile?.(value, 'x.json')
+    const cid = storeFile?.(value, 'x.json')
   }
 
   const downloadFile = async () => {

@@ -1,10 +1,9 @@
 import {
-  Avatar,
   Box,
   Button,
+  CardContent,
   Divider,
   Drawer,
-  Fab,
   Fade,
   Grid,
   IconButton,
@@ -23,6 +22,7 @@ import MailIcon from '@mui/icons-material/Mail'
 import ReactPortal from '../Portals'
 import { useState } from 'react'
 import { useStreamingMessages } from '../../contexts/StreamingMessages'
+import CustomCard from '../CustomCard'
 
 const styles = {
   table: {
@@ -278,27 +278,35 @@ const Chat = ({ open }: IChatProps) => {
             <List sx={styles.listedMessages}>
               {messages.map((message, index) => (
                 <ListItem key={index}>
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <ListItemText
-                        sx={{
-                          textAlign: message.isSender
-                            ? 'right'
-                            : 'left'
-                        }}
-                        primary={message.primary}
-                      ></ListItemText>
+                  <Grid
+                    container
+                    justifyContent={
+                      message.isSender ? 'flex-end' : 'flex-start'
+                    }
+                  >
+                    <Grid item>
+                      <CustomCard>
+                        <CardContent>
+                          <ListItemText
+                            sx={{
+                              textAlign: message.isSender
+                                ? 'right'
+                                : 'left'
+                            }}
+                            primary={message.primary}
+                          ></ListItemText>
+                          <ListItemText
+                            sx={{
+                              textAlign: message.isSender
+                                ? 'right'
+                                : 'left'
+                            }}
+                            secondary={message.secondary}
+                          ></ListItemText>
+                        </CardContent>
+                      </CustomCard>
                     </Grid>
-                    <Grid item xs={12}>
-                      <ListItemText
-                        sx={{
-                          textAlign: message.isSender
-                            ? 'right'
-                            : 'left'
-                        }}
-                        secondary={message.secondary}
-                      ></ListItemText>
-                    </Grid>
+                    <Grid item xs={12}></Grid>
                   </Grid>
                 </ListItem>
               ))}
