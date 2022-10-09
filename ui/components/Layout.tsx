@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Toolbar from '@mui/material/Toolbar'
 import CustomAppBar from './CustomAppBar'
 import Logo from '../assets/logo.png'
-import Link from "../src/Link";
+import Link from '../src/Link'
 
 const drawerWidth = 240
 
@@ -37,52 +37,58 @@ export default function Layout(props: Props) {
 
   const drawer = (
     <div>
-        <div style={{height: '65px', paddingTop: '15px', paddingLeft: '15px'}}>
-            <img sx={{paddingTop: '100px'}} src={Logo.src} width={'80%'}/>
-        </div>
+      <div
+        style={{
+          height: '65px',
+          paddingTop: '15px',
+          paddingLeft: '15px'
+        }}
+      >
+        <img src={Logo.src} width={'80%'} />
+      </div>
       {/*<Toolbar>Hi there</Toolbar>*/}
       <Divider />
       <List>
-          <Link href="/home">
-        <ListItem key={'Home'} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-                    <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Home'} />
-          </ListItemButton>
-        </ListItem>
-          </Link>
-          <Link href="/finance">
-        <ListItem key={'Finance'} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-                    <AccountBalanceIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Finance'} />
-          </ListItemButton>
-        </ListItem>
-          </Link>
-          <Link href="/social">
-        <ListItem key={'Social'} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-                    <GroupsIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Social'} />
-          </ListItemButton>
-        </ListItem>
-          </Link>
-          <Link href="/drive">
-        <ListItem key={'Documents'} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-                  <FeedIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Documents'} />
-          </ListItemButton>
-        </ListItem>
-          </Link>
+        <Link href="/home">
+          <ListItem key={'Home'} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Home'} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link href="/finance">
+          <ListItem key={'Finance'} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Finance'} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link href="/social">
+          <ListItem key={'Social'} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <GroupsIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Social'} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link href="/drive">
+          <ListItem key={'Documents'} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <FeedIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Documents'} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
       </List>
       <Divider />
     </div>
