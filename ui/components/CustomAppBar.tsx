@@ -24,10 +24,10 @@ const CustomAppBar = (props: ICustomAppBar) => {
   return (
     <AppBar
       position="fixed"
-      color="transparent"
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
-        ml: { sm: `${drawerWidth}px` }
+        ml: { sm: `${drawerWidth}px` },
+        backgroundColor: '#fff'
       }}
     >
       <WorldCoinWidget verifierCallback={verifyLogin!} />

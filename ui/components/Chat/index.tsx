@@ -1,46 +1,25 @@
 import {
   Box,
-  Button,
   CardContent,
   Divider,
-  Drawer,
   Fade,
   Grid,
   IconButton,
   InputAdornment,
   List,
   ListItem,
-  ListItemButton,
-  ListItemIcon,
   ListItemText,
-  Paper,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
-import ReactPortal from '../Portals'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useStreamingMessages } from '../../contexts/StreamingMessages'
 import CustomCard from '../CustomCard'
 
 const styles = {
   table: {
     minWidth: 350
-  },
-  chatWrapper: {
-    position: 'fixed',
-    display: 'block',
-    boxSizing: 'border-box',
-    bottom: 0,
-    right: 0,
-    marginBottom: 8,
-    marginRight: 8,
-    width: '30%',
-    height: '50%',
-    minWidth: '400px',
-    minHeight: '400px',
-    maxHeight: '700px'
   },
   headBG: {
     backgroundColor: '#e0e0e0'
@@ -60,84 +39,31 @@ const styles = {
   }
 }
 
-interface IChatProps {
-  open: boolean
-}
-
-const Chat = ({ open }: IChatProps) => {
+const Chat = () => {
   const [seeConversations, setSeeConversations] = useState(false)
-  const { subscribeMessages, publishMessage } = useStreamingMessages()
+  const { publishMessage, messages } = useStreamingMessages()
 
-  const messages = [
-    {
-      isSender: true,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: true,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: false,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: true,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: false,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: true,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: true,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: false,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
-    },
-    {
-      isSender: false,
-      primary: "Hey man, What's up ?",
-      secondary: '09:31'
+  const sendMessage = async (e: any) => {
+    e.preventDefault()
+
+    if (e.target.social_input.value) {
+      console.log('PUBLISHING: ', e.target.social_input.value)
+      publishMessage?.(e.target.social_input.value)
     }
-  ]
-
-  useEffect(() => {
-    subscribeMessages?.(onMessage)
-  }, [])
-
-  const sendMessage = async () => {
-    publishMessage?.('Holis wuenas, qlq')
-  }
-
-  const onMessage = async (content: any, metadata: any) => {
-    console.log('IS Comming: ', content, metadata)
   }
 
   return (
-    <ReactPortal>
-      <Fade timeout={600} in={open}>
-        <Grid container component={Paper} sx={styles.chatWrapper}>
-          <Button onClick={sendMessage}>Send message</Button>
-
+    <Fade timeout={600} in={true}>
+      <Box>
+        <Typography variant="h5">Social</Typography>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography variant="h4"></Typography>
+          </Grid>
           <Grid item xs={12} sx={styles.messageArea}>
             {/* <List sx={styles.messageArea}> */}
             <List sx={styles.listedMessages}>
-              {messages.map((message, index) => (
+              {messages?.map((message, index) => (
                 <ListItem key={index}>
                   <Grid
                     container
@@ -179,30 +105,33 @@ const Chat = ({ open }: IChatProps) => {
             <Divider />
             <Grid container style={{ padding: '20px' }}>
               <Grid item xs={12}>
-                <TextField
-                  id="outlined-basic-email"
-                  label="Type Something"
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          color="primary"
-                          aria-label="add"
-                          onClick={sendMessage}
-                        >
-                          <SendIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                />
+                <form onSubmit={sendMessage}>
+                  <TextField
+                    id="social_input"
+                    name="social_input"
+                    label="Type Something"
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            color="primary"
+                            aria-label="add"
+                            type="submit"
+                          >
+                            <SendIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                </form>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Fade>
-    </ReactPortal>
+      </Box>
+    </Fade>
   )
 }
 

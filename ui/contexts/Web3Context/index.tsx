@@ -315,6 +315,8 @@ const Web3ContextProvider = ({
     addressConnected,
     userInfo,
     worldId,
+    signer,
+    provider,
     login,
     logout,
     getUserInfo,

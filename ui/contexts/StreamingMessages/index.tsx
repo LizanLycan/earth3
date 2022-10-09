@@ -11,6 +11,7 @@ import { STREAMR_STREAM } from '../../utils/constants'
 import { useWeb3 } from '../Web3Context'
 
 interface IStreamingMessages {
+  messages: any[]
   getStream: () => Promise<any>
   subscribeMessages: (
     callback: (content: any, metadata: any) => void
@@ -35,8 +36,13 @@ export const useStreamingMessages = () => {
 const StreamingMessagesContextProvider = ({
   children
 }: PropsWithChildren<unknown>) => {
-  const { addressConnected } = useWeb3()
   const [streamr, setStreamr] = useState<StreamrClient>()
+  const [messages, setMessages] = useState<any[]>([])
+
+  useEffect(() => {
+    console.log('Messages')
+    console.log(messages)
+  }, [messages])
 
   useEffect(() => {
     const _streamr = new StreamrClient({
@@ -45,9 +51,27 @@ const StreamingMessagesContextProvider = ({
       }
     })
 
-    // const _streamr = new StreamrClient()
-
     setStreamr(_streamr)
+
+    subscribeMessages((_content: any, metadata: any) => {
+      console.log('IS Comming: ', metadata)
+
+      setMessages((_messages) => {
+        const newMessages = [
+          ..._messages,
+          {
+            primary: metadata.parsedContent.message,
+            sender: metadata.messageId.publisherId,
+            secondary: new Date(
+              metadata.messageId.timestamp
+            ).toDateString(),
+            isSender: true
+          }
+        ]
+
+        return newMessages
+      })
+    })
   }, [(window as any).ethereum])
 
   async function getStream() {
@@ -59,7 +83,7 @@ const StreamingMessagesContextProvider = ({
   async function subscribeMessages(
     callback: (content: any, metadata: any) => void
   ) {
-    await streamr?.subscribe(
+    const sus = await streamr?.subscribe(
       {
         id: STREAMR_STREAM,
         resend: {
@@ -68,13 +92,20 @@ const StreamingMessagesContextProvider = ({
       },
       callback
     )
+
+    sus?.onResent(() => {
+      console.log(
+        'Received all requested historical messages! Now switching to real time!'
+      )
+    })
   }
 
-  async function publishMessage(message: any) {
-    await streamr?.publish(STREAMR_STREAM, message)
+  async function publishMessage(message: string) {
+    await streamr?.publish(STREAMR_STREAM, { message })
   }
 
   const contextObj = {
+    messages,
     getStream,
     subscribeMessages,
     publishMessage

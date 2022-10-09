@@ -9,7 +9,6 @@ import Copyright from '../src/Copyright'
 import { Button, Card } from '@mui/material'
 import { useWeb3 } from '../contexts/Web3Context'
 import { StatusConnection } from '../contexts/Web3Context/types'
-import Chat from '../components/Chat'
 import TextEditor from '../components/TextEditor'
 import Layout from '../components/Layout'
 
@@ -21,8 +20,6 @@ const Home: NextPage = () => {
     getUserInfo,
     addressConnected
   } = useWeb3()
-
-  const [showChat, setShowChat] = React.useState(false)
 
   const getInfo = async () => {
     const res = await getUserInfo?.()
@@ -55,12 +52,6 @@ const Home: NextPage = () => {
         </Button>
 
         <Button
-          onClick={() => setShowChat((_showChat) => !_showChat)}
-        >
-          Show Chat
-        </Button>
-
-        <Button
           variant="contained"
           onClick={
             statusConnection === StatusConnection.Connected
@@ -70,8 +61,6 @@ const Home: NextPage = () => {
         >
           Connect {statusConnection}
         </Button>
-
-        {showChat && <Chat open={showChat} />}
 
         <TextEditor />
         <ProTip />
