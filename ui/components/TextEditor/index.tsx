@@ -1,9 +1,14 @@
+import { Download, PhotoAlbum } from '@mui/icons-material'
 import {
   Button,
   Card,
+  Grid,
   List,
   ListItem,
-  ListItemText
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography
 } from '@mui/material'
 import { Box } from '@mui/system'
 import dynamic from 'next/dynamic'
@@ -18,17 +23,15 @@ const defaultValue = {
   blocks: [
     {
       key: '71dmu',
-      text: 'Welcome to the party!!! Youou',
+      text: 'Welcome to the party here in the earth3 community!!! ',
       type: 'unstyled',
       depth: 0,
-      inlineStyleRanges: [
-        { offset: 24, length: 5, style: 'HIGHLIGHT' }
-      ],
+      inlineStyleRanges: [],
       entityRanges: [],
       data: {}
     },
     {
-      key: '8ss4m',
+      key: '28vja',
       text: '',
       type: 'unstyled',
       depth: 0,
@@ -42,8 +45,16 @@ const defaultValue = {
       type: 'unstyled',
       depth: 0,
       inlineStyleRanges: [
-        { offset: 0, length: 14, style: 'HIGHLIGHT' },
-        { offset: 0, length: 14, style: 'BOLD' }
+        {
+          offset: 0,
+          length: 14,
+          style: 'HIGHLIGHT'
+        },
+        {
+          offset: 0,
+          length: 14,
+          style: 'BOLD'
+        }
       ],
       entityRanges: [],
       data: {}
@@ -65,6 +76,7 @@ const TextEditor = () => {
   const { addressConnected } = useWeb3()
   const { storeFile, retrieveFiles } = useWeb3Storage()
   const [files, setFiles] = useState<any[]>([])
+  const [inEdit, setInEdit] = useState()
 
   useEffect(() => {
     if (addressConnected) {
@@ -87,6 +99,8 @@ const TextEditor = () => {
 
     const data = await response.json()
     console.log(data)
+
+    await getFiles()
   }
 
   const getFiles = async () => {
@@ -105,33 +119,61 @@ const TextEditor = () => {
     setFiles(data)
   }
 
-  const downloadFile = async () => {
-    const response = await retrieveFiles?.(
-      'bafybeidbqa2o4ohobvnvhjhtkpdc2bijapasmvd6jieojksq4dn7brtyau'
-    )
+  const downloadFile = async (cid: string) => {
+    const response = await retrieveFiles?.(cid)
 
-    console.log('RESPONSE: ', response)
+    setInEdit(response?.[0])
+  }
+
+  const truncateCid = (cid: string) => {
+    return `${cid.substring(0, 4)}...${cid.substring(
+      cid.length - 4,
+      cid.length
+    )}`
   }
 
   return (
-    <Card sx={{ maxWidth: '700px' }}>
-      <Button onClick={getFiles}>Retrieve</Button>
-
-      <List>
-        {files?.map((file) => (
-          <ListItem>
-            <ListItemText title={file.drive} primary={file.drive} />
-          </ListItem>
-        ))}
-      </List>
-      <Box m={2} mb={8} maxWidth={'100%'}>
-        <MUIRichTextEditor
-          label="Start typing..."
-          onSave={onSave}
-          defaultValue={JSON.stringify(defaultValue)}
-        />
-      </Box>
-    </Card>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={3}>
+        {files.length ? (
+          <List>
+            {files?.map((file) => (
+              <ListItem>
+                <ListItemButton
+                  onClick={() => downloadFile(file.cid)}
+                >
+                  <ListItemIcon>
+                    <PhotoAlbum />
+                  </ListItemIcon>
+                  <ListItemText
+                    title={file.cid}
+                    primary={`(New file)`}
+                    secondary={truncateCid(file.cid)}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Box mt={2}>
+            <Typography variant="subtitle2">
+              There is not files saved yet
+            </Typography>
+          </Box>
+        )}
+      </Grid>
+      <Grid item xs={12} md={9}>
+        <Card sx={{ maxWidth: '700px' }}>
+          <Box m={2} mb={8} maxWidth={'100%'}>
+            <MUIRichTextEditor
+              label="Start typing..."
+              onSave={onSave}
+              defaultValue={JSON.stringify(inEdit || defaultValue)}
+            />
+          </Box>
+        </Card>
+      </Grid>
+    </Grid>
   )
 }
 

@@ -79,7 +79,7 @@ export default function Layout(props: Props) {
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link href="/drive">
+        <Link href="/documents">
           <ListItem key={'Documents'} disablePadding>
             <ListItemButton>
               <ListItemIcon>

@@ -16,7 +16,7 @@ const WorldCoinWidget = (props: IWorldCoinWidgetProps) => {
     setOpen(!!worldId && !!addressConnected)
   }, [worldId, addressConnected])
 
-  return worldId && addressConnected ? (
+  return worldId && open ? (
     <Modal open={open} onClose={() => setOpen(false)}>
       <WorldIDWidget
         actionId={worldId} // obtain this from developer.worldcoin.org
