@@ -13,7 +13,7 @@ import {
   Typography
 } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useStreamingMessages } from '../../contexts/StreamingMessages'
 import CustomCard from '../CustomCard'
 
@@ -41,7 +41,15 @@ const styles = {
 
 const Chat = () => {
   const [seeConversations, setSeeConversations] = useState(false)
-  const { publishMessage, messages } = useStreamingMessages()
+  const { publishMessage, subscribeMessages, messages } =
+    useStreamingMessages()
+
+  useEffect(() => {
+    if (subscribeMessages) {
+      console.log('SUBSCRIBINGGGGG')
+      subscribeMessages()
+    }
+  }, [])
 
   const sendMessage = async (e: any) => {
     e.preventDefault()

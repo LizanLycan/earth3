@@ -13,9 +13,7 @@ import { useWeb3 } from '../Web3Context'
 interface IStreamingMessages {
   messages: any[]
   getStream: () => Promise<any>
-  subscribeMessages: (
-    callback: (content: any, metadata: any) => void
-  ) => Promise<void>
+  subscribeMessages: () => Promise<void>
   publishMessage(message: any): Promise<void>
 }
 
@@ -38,6 +36,7 @@ const StreamingMessagesContextProvider = ({
 }: PropsWithChildren<unknown>) => {
   const [streamr, setStreamr] = useState<StreamrClient>()
   const [messages, setMessages] = useState<any[]>([])
+  const [isSubscribed, setIsSubscribed] = useState(false)
 
   useEffect(() => {
     console.log('Messages')
@@ -52,26 +51,6 @@ const StreamingMessagesContextProvider = ({
     })
 
     setStreamr(_streamr)
-
-    subscribeMessages((_content: any, metadata: any) => {
-      console.log('IS Comming: ', metadata)
-
-      setMessages((_messages) => {
-        const newMessages = [
-          ..._messages,
-          {
-            primary: metadata.parsedContent.message,
-            sender: metadata.messageId.publisherId,
-            secondary: new Date(
-              metadata.messageId.timestamp
-            ).toDateString(),
-            isSender: true
-          }
-        ]
-
-        return newMessages
-      })
-    })
   }, [(window as any).ethereum])
 
   async function getStream() {
@@ -80,24 +59,43 @@ const StreamingMessagesContextProvider = ({
     return stream
   }
 
-  async function subscribeMessages(
-    callback: (content: any, metadata: any) => void
-  ) {
-    const sus = await streamr?.subscribe(
-      {
-        id: STREAMR_STREAM,
-        resend: {
-          last: 50
-        }
-      },
-      callback
-    )
+  async function subscribeMessages() {
+    if (!isSubscribed) {
+      setIsSubscribed(true)
+      const sus = await streamr?.subscribe(
+        {
+          id: STREAMR_STREAM,
+          resend: {
+            last: 50
+          }
+        },
+        (_content: any, metadata: any) => {
+          console.log('IS Comming: ', metadata)
 
-    sus?.onResent(() => {
-      console.log(
-        'Received all requested historical messages! Now switching to real time!'
+          setMessages((_messages) => {
+            const newMessages = [
+              ..._messages,
+              {
+                primary: metadata.parsedContent.message,
+                sender: metadata.messageId.publisherId,
+                secondary: new Date(
+                  metadata.messageId.timestamp
+                ).toDateString(),
+                isSender: true
+              }
+            ]
+
+            return newMessages
+          })
+        }
       )
-    })
+
+      sus?.onResent(() => {
+        console.log(
+          'Received all requested historical messages! Now switching to real time!'
+        )
+      })
+    }
   }
 
   async function publishMessage(message: string) {
