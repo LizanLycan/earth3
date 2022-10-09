@@ -56,7 +56,7 @@ if (mnemonic) {
 
   networks.boba = {
     live: true,
-    chainId: 40,
+    chainId: 288,
     url: 'https://boba-mainnet.gateway.pokt.network/v1/lb/' + process.env.POCKET_NETWORK_KEY,
     accounts: {
       mnemonic,
@@ -76,7 +76,7 @@ if (mnemonic) {
 
   networks.optimism = {
     live: true,
-    chainId: 30,
+    chainId: 10,
     url: 'https://optimism-mainnet.gateway.pokt.network/v1/lb/' + process.env.POCKET_NETWORK_KEY,
     accounts: {
       mnemonic,
@@ -86,12 +86,24 @@ if (mnemonic) {
 
   networks.gnosis = {
     live: true,
-    chainId: 31,
-    url: 'https://poa-xdai-mainnet.gateway.pokt.network/v1/lb/' + process.env.POCKET_NETWORK_KEY,
+    chainId: 100,
+    url: 'https://poa-xdai-archival.gateway.pokt.network/v1/lb/' + process.env.POCKET_NETWORK_KEY,
     accounts: {
       mnemonic,
     },
+    gasPrice: 1000000,
     tags: ['prod'],
+  };
+
+  networks.goerli = {
+    live: true,
+    chainId: 420,
+    url: 'https://goerli.optimism.io/',
+    accounts: {
+      mnemonic,
+    },
+    gasPrice: 1000000,
+    tags: ['stag'],
   };
 
   networks.mainnet = {
