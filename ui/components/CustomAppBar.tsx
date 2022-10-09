@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { useWeb3 } from '../contexts/Web3Context'
 import { StatusConnection } from '../contexts/Web3Context/types'
+import WorldCoinWidget from './WorldCoinWidget'
 
 interface ICustomAppBar {
   drawerWidth: number
@@ -17,7 +18,8 @@ interface ICustomAppBar {
 
 const CustomAppBar = (props: ICustomAppBar) => {
   const { drawerWidth } = props
-  const { userInfo, statusConnection, logout, login } = useWeb3()
+  const { userInfo, statusConnection, logout, verifyLogin, login } =
+    useWeb3()
 
   return (
     <AppBar
@@ -28,6 +30,7 @@ const CustomAppBar = (props: ICustomAppBar) => {
         ml: { sm: `${drawerWidth}px` }
       }}
     >
+      <WorldCoinWidget verifierCallback={verifyLogin!} />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box

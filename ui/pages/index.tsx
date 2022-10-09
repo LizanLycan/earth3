@@ -11,7 +11,6 @@ import { useWeb3 } from '../contexts/Web3Context'
 import { StatusConnection } from '../contexts/Web3Context/types'
 import Chat from '../components/Chat'
 import TextEditor from '../components/TextEditor'
-import { WorldIDWidget } from '@worldcoin/id'
 
 const Home: NextPage = () => {
   const {
@@ -32,15 +31,6 @@ const Home: NextPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <WorldIDWidget
-        actionId="wid_staging_b43f4ac42e8a6a4a7a9f76d7cb5dfe87" // obtain this from developer.worldcoin.org
-        signal={addressConnected}
-        enableTelemetry
-        onSuccess={(verificationResponse) =>
-          console.log(verificationResponse)
-        } // you'll actually want to pass the proof to the API or your smart contract
-        onError={(error) => console.error(error)}
-      />
       <Box
         sx={{
           my: 4,

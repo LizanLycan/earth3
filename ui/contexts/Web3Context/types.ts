@@ -19,8 +19,10 @@ export interface IWeb3Context {
   signer: ethers.providers.JsonRpcSigner | ethers.Signer | undefined
   provider: SafeEventEmitterProvider | null
   userInfo: any
+  worldId: string
 
   getUserInfo: () => Promise<any>
   login: () => Promise<string>
   logout: () => void
+  verifyLogin: (verifyResponse: any) => void
 }

@@ -16,7 +16,10 @@ import {
 } from '@web3auth/base'
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 import { ERROR_CODES, IWeb3Context, StatusConnection } from './types'
-import { WEB_3_AUTH_ID } from '../../utils/constants'
+import {
+  WEB_3_AUTH_ID,
+  WORLD_COIN_ACTIONS
+} from '../../utils/constants'
 import RPC from './ethersRPC'
 import { MetamaskAdapter } from '@web3auth/metamask-adapter'
 import { WalletConnectV1Adapter } from '@web3auth/wallet-connect-v1-adapter'
@@ -58,6 +61,8 @@ const Web3ContextProvider = ({
   const [provider, setProvider] =
     useState<SafeEventEmitterProvider | null>(null)
   const [userInfo, setUserInfo] = useState<any>()
+
+  const [worldId, setWorldId] = useState<string>()
 
   useEffect(() => {
     ;(async () => {
@@ -142,10 +147,38 @@ const Web3ContextProvider = ({
     }
   }, [web3auth])
 
+  useEffect(() => {
+    ;(async () => {
+      if (
+        statusConnection === StatusConnection.Connected &&
+        addressConnected
+      ) {
+        if (addressConnected) {
+          const response = await fetch(
+            `/api/user/action/get?address=${addressConnected}&worldId=${WORLD_COIN_ACTIONS.login}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }
+          )
+
+          const res = await response.json()
+
+          if (!res.length) {
+            console.log('WORLDID')
+            setWorldId(WORLD_COIN_ACTIONS.login)
+          }
+        }
+      }
+    })()
+  }, [statusConnection, addressConnected])
+
   const login = async (): Promise<string> => {
     if (!web3auth) {
       console.log('web3auth not initialized yet')
-      setAddressConnected(StatusConnection.Disconnected)
+      setStatusConnection(StatusConnection.Disconnected)
       return StatusConnection.Disconnected
     }
 
@@ -172,7 +205,7 @@ const Web3ContextProvider = ({
         return StatusConnection.Connected
       }
 
-      setAddressConnected(StatusConnection.Disconnected)
+      setStatusConnection(StatusConnection.Disconnected)
       return StatusConnection.Disconnected
     } catch (err: any) {
       if (
@@ -207,13 +240,9 @@ const Web3ContextProvider = ({
     web3auth.on(
       ADAPTER_EVENTS.CONNECTED,
       async (data: CONNECTED_EVENT_DATA) => {
-        // console.log('CONNNNECTTTTTEEEEED to wallet', data)
-        // here is displayed provider ej: metamask
-        // web3auth.provider will be available here after user is connected
-
         const userInfo = await web3auth.getUserInfo()
         setUserInfo(userInfo)
-        setAddressConnected(StatusConnection.Connected)
+        setStatusConnection(StatusConnection.Connected)
       }
     )
     web3auth.on(ADAPTER_EVENTS.CONNECTING, () => {
@@ -221,11 +250,11 @@ const Web3ContextProvider = ({
     })
     web3auth.on(ADAPTER_EVENTS.DISCONNECTED, () => {
       console.log('disconnected')
-      setAddressConnected(StatusConnection.Disconnected)
+      setStatusConnection(StatusConnection.Disconnected)
     })
     web3auth.on(ADAPTER_EVENTS.ERRORED, (error) => {
       console.log('error', error)
-      setAddressConnected(StatusConnection.Error)
+      setStatusConnection(StatusConnection.Error)
     })
 
     web3auth.on(ADAPTER_EVENTS.READY, () => {
@@ -244,14 +273,52 @@ const Web3ContextProvider = ({
     return web3auth.getUserInfo()
   }
 
+  const verifyLogin = async (verificationResponse: any) => {
+    const response = await fetch(
+      'https://developer.worldcoin.org/api/v1/verify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...verificationResponse,
+          signal: addressConnected,
+          action_id: WORLD_COIN_ACTIONS.login
+        })
+      }
+    )
+
+    const successRes = await response.json()
+
+    if (successRes?.success) {
+      await fetch('/api/user/action/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          address: addressConnected,
+          worldId: WORLD_COIN_ACTIONS.login
+        })
+      })
+
+      setWorldId('')
+    }
+
+    return response.ok
+  }
+
   const contextObj = {
     chainId,
     statusConnection,
     addressConnected,
     userInfo,
+    worldId,
     login,
     logout,
-    getUserInfo
+    getUserInfo,
+    verifyLogin
   }
 
   return (
