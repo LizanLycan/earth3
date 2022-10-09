@@ -3,15 +3,19 @@ import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
+import HomeIcon from '@mui/icons-material/Home'
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
+import GroupsIcon from '@mui/icons-material/Groups'
+import FeedIcon from '@mui/icons-material/Feed'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import MailIcon from '@mui/icons-material/Mail'
 import Toolbar from '@mui/material/Toolbar'
 import CustomAppBar from './CustomAppBar'
+import Logo from '../assets/logo.png'
+import Link from "../src/Link";
 
 const drawerWidth = 240
 
@@ -33,35 +37,54 @@ export default function Layout(props: Props) {
 
   const drawer = (
     <div>
-      <Toolbar>Hi there</Toolbar>
+        <div style={{height: '65px', paddingTop: '15px', paddingLeft: '15px'}}>
+            <img sx={{paddingTop: '100px'}} src={Logo.src} width={'80%'}/>
+        </div>
+      {/*<Toolbar>Hi there</Toolbar>*/}
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map(
-          (text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          )
-        )}
+          <Link href="/home">
+        <ListItem key={'Home'} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+                    <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Home'} />
+          </ListItemButton>
+        </ListItem>
+          </Link>
+          <Link href="/finance">
+        <ListItem key={'Finance'} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+                    <AccountBalanceIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Finance'} />
+          </ListItemButton>
+        </ListItem>
+          </Link>
+          <Link href="/social">
+        <ListItem key={'Social'} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+                    <GroupsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Social'} />
+          </ListItemButton>
+        </ListItem>
+          </Link>
+          <Link href="/drive">
+        <ListItem key={'Documents'} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+                  <FeedIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Documents'} />
+          </ListItemButton>
+        </ListItem>
+          </Link>
       </List>
       <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </div>
   )
 

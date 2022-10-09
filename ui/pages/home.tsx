@@ -10,7 +10,7 @@ import CustomCard from '../components/CustomCard'
 import Layout from '../components/Layout'
 import CustomTable from '../components/CustomTable'
 
-const Dashboard: NextPage = () => {
+const Home: NextPage = () => {
   return (
     <Layout>
       <Container>
@@ -18,7 +18,7 @@ const Dashboard: NextPage = () => {
           <Grid item xs={12} md={4}>
             <CustomCard color="secondary">
               <CardHeader title={'Tilte'} />
-              <CardContent>Picha tu</CardContent>
+              <CardContent></CardContent>
             </CustomCard>
           </Grid>
           <Grid item xs={12} md={8}>
@@ -30,4 +30,4 @@ const Dashboard: NextPage = () => {
   )
 }
 
-export default Dashboard
+export default Home

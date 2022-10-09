@@ -69,14 +69,12 @@ export default class EthereumRpc {
     }
   }
 
-  async sendTransaction(): Promise<any> {
+  async sendTransaction(destination: string): Promise<any> {
     try {
       const ethersProvider = new ethers.providers.Web3Provider(
         this.provider
       )
       const signer = ethersProvider.getSigner()
-
-      const destination = '0x40e1c367Eca34250cAF1bc8330E9EddfD403fC56'
 
       // Convert 1 ether to wei
       const amount = ethers.utils.parseEther('0.001')

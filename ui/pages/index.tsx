@@ -11,6 +11,7 @@ import { useWeb3 } from '../contexts/Web3Context'
 import { StatusConnection } from '../contexts/Web3Context/types'
 import Chat from '../components/Chat'
 import TextEditor from '../components/TextEditor'
+import Layout from '../components/Layout'
 
 const Home: NextPage = () => {
   const {
@@ -30,6 +31,8 @@ const Home: NextPage = () => {
   }
 
   return (
+
+      <Layout>
     <Container maxWidth="lg">
       <Box
         sx={{
@@ -75,6 +78,7 @@ const Home: NextPage = () => {
         <Copyright />
       </Box>
     </Container>
+      </Layout>
   )
 }
 
