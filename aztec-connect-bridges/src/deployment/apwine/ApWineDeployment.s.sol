@@ -23,10 +23,11 @@ contract ApWineDeployment is BaseDeployment {
     function deployAndList() public {
         address bridge = deploy();
 
-        uint256 addressId = listBridge(bridge, 500000);
+        uint256 bridgeId = listBridge(bridge, 500000);
 
-        listAsset(address(STETH_PT), 500000);
+        uint256 assetId = listAsset(address(STETH_PT), 500000);
 
-        emit log_named_uint("Compound bridge address id", addressId);
+        emit log_named_uint("ApWine bridge address id", bridgeId);
+        emit log_named_uint("stETHPT asset address id", assetId);
     }
 }
