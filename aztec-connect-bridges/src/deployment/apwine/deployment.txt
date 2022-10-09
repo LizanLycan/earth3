@@ -1,0 +1,63 @@
+forge script --fork-url https://aztec-connect-testnet-eth-host.aztec.network:8545 --ffi --private-key <> ApWineDeployment --sig "deployAndList()" --legacy --broadcast
+[⠰] Compiling...
+No files changed, compilation skipped
+Script ran successfully.
+
+== Logs ==
+  broadcasting: testnet
+  Current chain id: 677868
+  Rollup at: 0x614957a8ae7b87f18fa3f207b6619c520a022b4f
+  Deploying ApWine bridge
+  ApWine bridge deployed to: 0xbae596f43ec0aea595139f422a02a8e69029190f
+  LISTED: 0x137189d1342aabe7cd75b42b265e4647596aaa01
+  With id: 12
+  ApWine bridge address id: 20
+  stETHPT asset address id: 12
+
+==========================
+
+Estimated total gas used for script: 1854784
+
+Estimated amount required: 0.003709568 ETH
+
+==========================
+
+###
+Finding wallets for all the necessary addresses...
+##
+Sending transactions [0 - 2].
+⠙ [00:00:00] [#############################################################################################################################################################] 3/3 txes (0.0s)
+Transactions saved to: /ethbogota/aztec-connect-bridges/broadcast/ApWineDeployment.s.sol/677868/deployAndList-latest.json
+
+##
+Waiting for receipts.
+⠚ [00:00:06] [#########################################################################################################################################################] 3/3 receipts (0.0s)
+#####
+✅ Hash: 0x1a2d0645a55942ffde7c177d3b0380091fd4f08dd4903aea8817436f074fdfa4
+Contract Address: 0xbae596f43ec0aea595139f422a02a8e69029190f
+Block: 15526308
+Paid: 0.00246897 ETH (1234485 gas * 2 gwei)
+
+
+#####
+✅ Hash: 0x150d7c8a19a1789e1c4e596eca77d62395ba6a2d77c5e920b51c47ded79dd7d8
+Block: 15526309
+Paid: 0.000175794 ETH (87897 gas * 2 gwei)
+
+
+#####
+✅ Hash: 0x8a518d9ab178e1f07d995ce30f7b00a5915ccaa665a77ad5201ffc32d3cb63e3
+Block: 15526310
+Paid: 0.000175792 ETH (87896 gas * 2 gwei)
+
+
+Transactions saved to: /ethbogota/aztec-connect-bridges/broadcast/ApWineDeployment.s.sol/677868/deployAndList-latest.json
+
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL. Transaction receipts written to "/ethbogota/aztec-connect-bridges/broadcast/ApWineDeployment.s.sol/677868/deployAndList-latest.json"
+Total Paid: 0.002820556 ETH (1410278 gas * avg 2 gwei)
+
+Transactions saved to: /ethbogota/aztec-connect-bridges/broadcast/ApWineDeployment.s.sol/677868/deployAndList-latest.json
