@@ -74,7 +74,7 @@ const TextEditor = () => {
 
   const onSave = async (value: any) => {
     const cid = await storeFile?.(value, 'x.json')
-    const response = await fetch('/api/save', {
+    const response = await fetch('/api/file/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ const TextEditor = () => {
 
   const getFiles = async () => {
     const response = await fetch(
-      `/api/retrieve?address=${addressConnected}`,
+      `/api/file/retrieve?address=${addressConnected}`,
       {
         method: 'GET',
         headers: {

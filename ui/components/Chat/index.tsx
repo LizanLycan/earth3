@@ -20,7 +20,7 @@ import SendIcon from '@mui/icons-material/Send'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import ReactPortal from '../Portals'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useStreamingMessages } from '../../contexts/StreamingMessages'
 import CustomCard from '../CustomCard'
 
@@ -66,9 +66,7 @@ interface IChatProps {
 
 const Chat = ({ open }: IChatProps) => {
   const [seeConversations, setSeeConversations] = useState(false)
-  const [stream, setStream] = useState<any>()
-  const { getOrCreateStream, subscribeMessages, publishMessage } =
-    useStreamingMessages()
+  const { subscribeMessages, publishMessage } = useStreamingMessages()
 
   const messages = [
     {
@@ -118,161 +116,24 @@ const Chat = ({ open }: IChatProps) => {
     }
   ]
 
+  useEffect(() => {
+    subscribeMessages?.(onMessage)
+  }, [])
+
   const sendMessage = async () => {
-    publishMessage?.(stream, 'Holis wuenas, qlq')
+    publishMessage?.('Holis wuenas, qlq')
   }
 
   const onMessage = async (content: any, metadata: any) => {
     console.log('IS Comming: ', content, metadata)
   }
 
-  const createMessages = async () => {
-    // const stream = await getOrCreateStream?.(
-    //   '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345'
-    // )
-
-    // setStream(stream)
-
-    await subscribeMessages?.(
-      '0x9e2fde9d46421B8f5E276EeEbD5298B54249F345',
-      onMessage
-    )
-  }
-
   return (
     <ReactPortal>
       <Fade timeout={600} in={open}>
         <Grid container component={Paper} sx={styles.chatWrapper}>
-          <Button onClick={createMessages}>Create messages</Button>
-          <IconButton
-            sx={{ position: 'absolute', zIndex: 1 }}
-            onClick={() => setSeeConversations(true)}
-          >
-            <MailIcon />
-          </IconButton>
-          <Drawer
-            sx={{
-              height: '100%',
-              position: 'absolute',
-              width: '100%',
-              flexShrink: 0,
+          <Button onClick={sendMessage}>Send message</Button>
 
-              '& .MuiDrawer-paper': {
-                maxWidth: '50%',
-                position: 'absolute',
-                transition: 'none !important'
-              }
-            }}
-            ModalProps={{
-              style: { position: 'absolute' }
-            }}
-            variant="persistent"
-            anchor={'left'}
-            open={seeConversations}
-            onClose={() => setSeeConversations(false)}
-          >
-            <Box
-              height={'100%'}
-              role="presentation"
-              onClick={() => setSeeConversations(false)}
-            >
-              <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map(
-                  (text, index) => (
-                    <ListItem key={text} disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          {index % 2 === 0 ? (
-                            <InboxIcon />
-                          ) : (
-                            <MailIcon />
-                          )}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                      </ListItemButton>
-                    </ListItem>
-                  )
-                )}
-              </List>
-              <Divider />
-              <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                  <ListItem key={text} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        {index % 2 === 0 ? (
-                          <InboxIcon />
-                        ) : (
-                          <MailIcon />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText primary={text} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </Drawer>
-          {/* <Grid item xs={3} sx={styles.borderRight500}>
-            <List>
-              <ListItem button key="RemySharp">
-                <ListItemIcon>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://material-ui.com/static/images/avatar/1.jpg"
-                  />
-                </ListItemIcon>
-                <ListItemText primary="John Wick"></ListItemText>
-              </ListItem>
-            </List>
-            <Divider />
-            <Grid item xs={12} style={{ padding: '10px' }}>
-              <TextField
-                id="outlined-basic-email"
-                label="Search"
-                variant="outlined"
-                fullWidth
-              />
-            </Grid>
-            <Divider />
-            <List>
-              <ListItem button key="RemySharp">
-                <ListItemIcon>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://material-ui.com/static/images/avatar/1.jpg"
-                  />
-                </ListItemIcon>
-                <ListItemText primary="Remy Sharp">
-                  Remy Sharp
-                </ListItemText>
-                <ListItemText
-                  secondary="online"
-                  sx={{ textAlign: 'right' }}
-                ></ListItemText>
-              </ListItem>
-              <ListItem button key="Alice">
-                <ListItemIcon>
-                  <Avatar
-                    alt="Alice"
-                    src="https://material-ui.com/static/images/avatar/3.jpg"
-                  />
-                </ListItemIcon>
-                <ListItemText primary="Alice">Alice</ListItemText>
-              </ListItem>
-              <ListItem button key="CindyBaker">
-                <ListItemIcon>
-                  <Avatar
-                    alt="Cindy Baker"
-                    src="https://material-ui.com/static/images/avatar/2.jpg"
-                  />
-                </ListItemIcon>
-                <ListItemText primary="Cindy Baker">
-                  Cindy Baker
-                </ListItemText>
-              </ListItem>
-            </List>
-          </Grid> */}
           <Grid item xs={12} sx={styles.messageArea}>
             {/* <List sx={styles.messageArea}> */}
             <List sx={styles.listedMessages}>
@@ -285,7 +146,11 @@ const Chat = ({ open }: IChatProps) => {
                     }
                   >
                     <Grid item>
-                      <CustomCard>
+                      <CustomCard
+                        color={
+                          message.isSender ? 'primary' : undefined
+                        }
+                      >
                         <CardContent>
                           <ListItemText
                             sx={{
